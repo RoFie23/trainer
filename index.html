@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
+<title>Mein 1×1-Trainer – Klasse 3</title>
+<style>
+:root{color-scheme:light;--blue:#2563eb;--ink:#172554;--muted:#64748b;--line:#dbe3ef;--panel:#f3f6fb;--green:#166534;--amber:#92400e}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{padding-top:env(safe-area-inset-top,0px);margin:0;background:#f7f9fc;color:#1e293b;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px;line-height:1.45}
+button,input,select{font:inherit;touch-action:manipulation}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}
+.app{width:min(900px,100%);margin:0 auto;padding:clamp(12px,3vw,28px);padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+.hero{background:linear-gradient(135deg,#dbeafe,#ede9fe);color:#1e3a8a;border-radius:24px;padding:clamp(20px,4vw,32px);margin-bottom:16px}
+.eyebrow{text-transform:uppercase;font-size:.78rem;font-weight:800;letter-spacing:.08em}
+h1{font-size:clamp(2rem,6vw,3rem);line-height:1.1;margin:8px 0}
+h2{font-size:1.2rem;margin:0 0 14px}
+.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:clamp(15px,3vw,22px);margin-bottom:16px;box-shadow:0 2px 8px #0f172a08}
+.muted{color:var(--muted)}.small{font-size:.88rem}
+label,.label{display:block;font-weight:700;margin-bottom:7px}
+select,input[type=number]{width:100%;min-height:48px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:11px;background:#fff;color:#172554}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.section{margin-top:18px}
+.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.choices.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.choice{min-height:48px;border:1px solid #cbd5e1;background:#fff;border-radius:12px;padding:9px 7px;font-weight:700;color:#334155}
+.choice[aria-pressed=true]{background:#dbeafe;border:2px solid #3b82f6;color:#1d4ed8}
+.primary{display:block;width:100%;min-height:50px;background:var(--blue);color:#fff;border:0;border-radius:13px;padding:12px 16px;font-weight:800}
+.secondary{width:100%;min-height:46px;background:white;color:#1e293b;border:1px solid #cbd5e1;border-radius:12px;padding:10px 14px;font-weight:700}
+.status{margin-top:10px;color:#9a3412;font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}
+.stat{background:var(--panel);border-radius:12px;text-align:center;padding:10px 4px}
+.stat span{display:block;font-size:.8rem;color:var(--muted)}.stat strong{font-size:1.6rem}
+.progress{height:8px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin:12px 0 18px}
+.progress div{height:100%;width:0;background:#3b82f6;transition:width .2s}
+.question-box{background:var(--panel);border-radius:18px;padding:clamp(22px,6vw,40px) 12px;text-align:center;margin-bottom:18px}
+.math{font-size:clamp(2.4rem,9vw,4rem);font-weight:900;line-height:1.25;overflow-wrap:anywhere;color:#172554}
+.answer-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.answer-row button{min-width:105px}
+.feedback{padding:12px;border-radius:12px;margin-top:12px;font-weight:700}
+.feedback.good{background:#dcfce7;color:var(--green)}.feedback.retry{background:#fef3c7;color:var(--amber)}
+.hidden{display:none!important}
+.result{background:var(--panel);padding:18px;border-radius:16px;text-align:center;margin-top:16px}
+.result h3{font-size:1.55rem;margin:6px 0}
+.review{text-align:left;margin:16px 0}
+.review-item{padding:7px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.pad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:360px;margin:14px auto 0}
+.pad button{min-height:clamp(54px,9vh,68px);font-size:1.6rem;font-weight:800;border:1px solid #cbd5e1;border-radius:14px;background:#fff;color:#172554;box-shadow:0 2px 0 #cbd5e1;user-select:none;-webkit-user-select:none}
+.pad button:active{background:#dbeafe;transform:translateY(1px);box-shadow:none}
+.pad button:disabled{opacity:.45;cursor:default}
+.pad .fn{background:var(--panel);font-size:1.3rem}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:8px}
+@media(min-width:640px){.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}.config-grid .section:first-child{margin-top:0}}
+@media(max-width:380px){.choices{gap:6px}.choice{font-size:.85rem}.answer-row{grid-template-columns:1fr}.answer-row button{width:100%}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app">
+<div id="js-error" class="panel" style="display:none;border-color:#f59e0b;background:#fffbeb;color:#92400e;font-weight:600"></div>
+<noscript><div class="panel" style="border-color:#f59e0b;background:#fffbeb;color:#92400e;font-weight:600">JavaScript ist deaktiviert oder wird von dieser Ansicht blockiert. Bitte die Datei direkt im Browser (Safari/Chrome/Edge) öffnen, nicht in einer Vorschau.</div></noscript>
+<header class="hero">
+ <div class="eyebrow">Mathe · Klasse 3</div>
+ <h1>Mein 1×1-Trainer 🚀</h1>
+ <p>Übe in deinem Tempo, sammle Punkte und werde zum Rechenprofi!</p>
+</header>
+
+<section class="panel" aria-labelledby="settings-title">
+ <h2 id="settings-title">⚙️ Stelle deine Übung ein</h2>
+ <div class="config-grid">
+  <div>
+   <span class="label">Aufgabenbereich</span>
+   <p class="muted small" style="margin:0">Alle Aufgaben von 1×1 bis 10×20: Ein Faktor ist immer einstellig (1–10), der andere geht bis 20. Mal- und Geteilt-Aufgaben kommen in beiden Reihenfolgen vor.</p>
+  </div>
+  <div class="section">
+   <span class="label">Rechenarten</span>
+   <div class="choices" id="ops">
+    <button type="button" class="choice" data-value="mul" aria-pressed="false">✖ Mal</button>
+    <button type="button" class="choice" data-value="div" aria-pressed="false">➗ Geteilt</button>
+    <button type="button" class="choice" data-value="mix" aria-pressed="true">🔀 Beide</button>
+   </div>
+  </div>
+  <div class="section">
+   <span class="label">Übungsmodus</span>
+   <div class="choices" id="modes">
+    <button type="button" class="choice" data-value="mixed" aria-pressed="true">🔀 Gemischt</button>
+    <button type="button" class="choice" data-value="row" aria-pressed="false">🎯 Reihe</button>
+    <button type="button" class="choice" data-value="errors" aria-pressed="false">🔁 Fehler</button>
+   </div>
+   <div id="row-box" class="section hidden">
+    <label for="row">Welche Reihe?</label><select id="row"></select>
+   </div>
+  </div>
+ </div>
+ <div class="section">
+  <span class="label">Anzahl der Aufgaben</span>
+  <div class="choices" id="counts">
+   <button type="button" class="choice" data-value="10" aria-pressed="true">10 Aufgaben</button>
+   <button type="button" class="choice" data-value="20" aria-pressed="false">20 Aufgaben</button>
+   <button type="button" class="choice" data-value="30" aria-pressed="false">30 Aufgaben</button>
+  </div>
+ </div>
+ <p id="config-error" class="status" role="status"></p>
+ <button id="start" type="button" class="primary" style="margin-top:16px">Übung starten 🎯</button>
+</section>
+
+<section class="panel" aria-labelledby="exercise-title">
+ <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+  <h2 id="exercise-title" style="margin:0">Deine Aufgabe</h2><span id="step" class="muted small">Aufgabe 1 von 10</span>
+ </div>
+ <div class="progress" aria-label="Fortschritt"><div id="bar"></div></div>
+ <div class="stats">
+  <div class="stat"><span>Punkte</span><strong id="score">0</strong></div>
+  <div class="stat"><span>Richtig</span><strong id="correct">0</strong></div>
+  <div class="stat"><span>Serie 🔥</span><strong id="streak">0</strong></div>
+ </div>
+ <div class="question-box">
+  <div id="kind" class="muted small" style="font-weight:800;margin-bottom:8px">Gemischte Aufgaben</div>
+  <div id="question" class="math">7 × 8 = ?</div>
+  <p id="hint" class="muted" style="margin:10px 0 0">Rechne in deinem Tempo.</p>
+ </div>
+ <form id="answer-form">
+  <label for="answer">Deine Antwort</label>
+  <div class="answer-row">
+   <input id="answer" type="number" inputmode="none" step="1" placeholder="Ergebnis eingeben" autocomplete="off" required>
+   <button id="check" type="submit" class="primary">Prüfen</button>
+  </div>
+  <div class="pad" id="pad" aria-label="Zahlenfeld">
+   <button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button>
+   <button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button>
+   <button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button>
+   <button type="button" class="fn" data-k="clear" aria-label="Alles löschen">C</button><button type="button" data-k="0">0</button><button type="button" class="fn" data-k="back" aria-label="Letzte Ziffer löschen">⌫</button>
+  </div>
+ </form>
+ <div id="feedback" role="status" aria-live="polite"></div>
+ <button id="next" type="button" class="primary hidden" style="margin-top:12px">Nächste Aufgabe →</button>
+ <div id="results" class="result hidden">
+  <div id="emoji" style="font-size:2.5rem">🏆</div>
+  <h3 id="result-title">Super gemacht!</h3>
+  <p id="result-text" class="muted"></p>
+  <div id="review" class="review"></div>
+  <button id="retry" type="button" class="primary">Noch eine Runde 🔄</button>
+  <button id="wrong" type="button" class="secondary hidden" style="margin-top:8px">Meine Fehler üben 🔁</button>
+ </div>
+ <p class="muted small" style="margin-bottom:0;margin-top:16px">Tipp: Tippe die Antwort auf dem Zahlenfeld ein und dann auf „Prüfen“. Mit einer Tastatur geht es auch, die Eingabetaste prüft ebenfalls.</p>
+</section>
+<footer>Mein 1×1-Trainer · Für Tablet und Computer optimiert</footer>
+</main>
+<script>
+window.onerror=function(m,u,l){var e=document.getElementById('js-error');if(e){e.style.display='block';e.textContent='Technischer Fehler im Trainer: '+m+' (Zeile '+l+'). Bitte Browser aktualisieren oder die Datei direkt im Browser öffnen.';}};
+</script>
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+let op='mix', mode='mixed', count=10, questions=[], index=0, score=0, correct=0, streak=0, answered=false, wrong=[], previousWrong=[], lastConfig=null;
+
+function selectGroup(id, value) {
+  $(id).querySelectorAll('button[data-value]').forEach(btn => {
+    const active = btn.dataset.value === String(value);
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', String(active));
+  });
+}
+function shuffle(array) {
+  const a = array.slice();
+  for (let i=a.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function updateArea() {
+  $('row').innerHTML='';
+  for(let n=1;n<=20;n++){const o=document.createElement('option');o.value=String(n);o.textContent=n+'er-Reihe';$('row').appendChild(o);}
+}
+function config() {
+  return {op,mode,count,row:Number($('row').value)};
+}
+function buildPool(c) {
+  const pool=[];
+  // Ein Faktor ist immer einstellig (1-10), der andere 1-20; beide Reihenfolgen
+  for(let s=1;s<=10;s++) for(let g=1;g<=20;g++) {
+    [[s,g],[g,s]].forEach(f=>{
+      const a=f[0], b=f[1];
+      if(c.mode==='row' && a!==c.row && b!==c.row) return;
+      if(c.op!=='div') pool.push({a:a,b:b,op:'mul',answer:a*b});
+      if(c.op!=='mul') pool.push({product:a*b,divisor:b,op:'div',answer:a});
+    });
+  }
+  const unique=new Map();
+  pool.forEach(q=>unique.set(q.op+':'+(q.a!==undefined?q.a:q.product)+':'+(q.b!==undefined?q.b:q.divisor),q));
+  return [...unique.values()];
+}
+function makeQuestions(c) {
+  if(c.mode==='errors') {
+    if(!previousWrong.length) throw Error('Es gibt noch keine Fehler zum Wiederholen. Starte erst eine normale Übungsrunde.');
+    return shuffle(previousWrong.map(x=>Object.assign({},x.q))).slice(0,c.count);
+  }
+  const pool=buildPool(c);
+  if(!pool.length) throw Error('Für diese Auswahl gibt es keine Aufgaben. Bitte ändere die Einstellungen.');
+  const shuffled=shuffle(pool), out=[];
+  while(out.length<c.count) out.push(Object.assign({},shuffled[out.length%shuffled.length]));
+  return shuffle(out);
+}
+function start() {
+  try {
+    const c=config();
+    questions=makeQuestions(c); lastConfig=c; index=0; score=0; correct=0; streak=0; answered=false; wrong=[];
+    $('config-error').textContent=''; $('results').classList.add('hidden'); $('answer-form').classList.remove('hidden');
+    $('next').classList.add('hidden'); $('feedback').textContent='';
+    render();
+    $('answer').focus({preventScroll:true});
+  } catch(e) { $('config-error').textContent='ℹ️ '+e.message; }
+}
+function render() {
+  if(index>=questions.length){finish();return;}
+  const q=questions[index]; answered=false;
+  $('step').textContent=`Aufgabe ${index+1} von ${questions.length}`;
+  $('bar').style.width=(index/questions.length*100)+'%';
+  $('score').textContent=score; $('correct').textContent=correct; $('streak').textContent=streak;
+  $('kind').textContent=q.op==='mul'?'Multiplikation ✖':'Division ➗';
+  $('question').textContent=q.op==='mul'?`${q.a} × ${q.b} = ?`:`${q.product} : ${q.divisor} = ?`;
+  $('hint').textContent='Rechne in deinem Tempo.';
+  $('answer').value=''; $('answer').disabled=false; $('check').disabled=false; setPad(false);
+  $('feedback').textContent=''; $('feedback').className='';
+  $('next').classList.add('hidden'); $('bar').style.width=(index/questions.length*100)+'%';
+}
+function setPad(dis) { $('pad').querySelectorAll('button').forEach(b=>{b.disabled=dis;}); }
+function padPress(k) {
+  const inp=$('answer'); if(inp.disabled) return;
+  let v=inp.value;
+  if(k==='clear') v='';
+  else if(k==='back') v=v.slice(0,-1);
+  else if(v.length<3) v=(v==='0'?'':v)+k;
+  inp.value=v;
+}
+function submit(event) {
+  event.preventDefault();
+  if(answered || index>=questions.length || $('answer').value.trim()==='') return;
+  const q=questions[index], value=Number($('answer').value), ok=Number.isFinite(value)&&value===q.answer;
+  answered=true;
+  if(ok){correct++;score+=10;streak++;}
+  else {streak=0;wrong.push({q:Object.assign({},q),entered:value});}
+  $('score').textContent=score; $('correct').textContent=correct; $('streak').textContent=streak;
+  $('answer').disabled=true; $('check').disabled=true; setPad(true);
+  $('feedback').className='feedback '+(ok?'good':'retry');
+  $('feedback').textContent=ok?(streak>=3?`🎉 Richtig! ${streak} richtige Antworten in Folge. +10 Punkte`:'✅ Richtig gerechnet! +10 Punkte'):`💪 Noch nicht ganz. Die richtige Antwort lautet ${q.answer}. Du kannst diese Aufgabe später wiederholen.`;
+  $('hint').textContent=ok?'Klasse, weiter so!':'Aus Fehlern lernst du!';
+  $('next').textContent=index===questions.length-1?'Ergebnis ansehen 🏆':'Nächste Aufgabe →';
+  $('next').classList.remove('hidden');
+}
+function next() { if(!answered)return; index++; render(); }
+function finish() {
+  $('step').textContent=`${questions.length} von ${questions.length} Aufgaben`;
+  $('bar').style.width='100%'; $('answer-form').classList.add('hidden'); $('next').classList.add('hidden');
+  $('results').classList.remove('hidden'); $('kind').textContent='Runde beendet';
+  $('question').textContent=`${correct} / ${questions.length}`; $('hint').textContent='Aufgaben richtig beantwortet';
+  const pct=Math.round(correct/questions.length*100);
+  $('emoji').textContent=pct===100?'🏆':pct>=80?'🌟':pct>=50?'💪':'🌱';
+  $('result-title').textContent=pct===100?'Perfekt! Alles richtig!':pct>=80?'Super gemacht!':pct>=50?'Gut geübt!':'Weiter üben lohnt sich!';
+  $('result-text').textContent=`Du hast ${correct} von ${questions.length} Aufgaben richtig gelöst und ${score} Punkte gesammelt (${pct} %).`;
+  previousWrong=wrong.map(x=>({q:Object.assign({},x.q),entered:x.entered}));
+  $('review').innerHTML='';
+  if(previousWrong.length) {
+    const title=document.createElement('strong'); title.textContent='Diese Aufgaben kannst du noch üben:'; $('review').appendChild(title);
+    previousWrong.slice(0,12).forEach(x=>{
+      const div=document.createElement('div'); div.className='review-item';
+      const q=x.q; div.textContent=(q.op==='mul'?`${q.a} × ${q.b}`:`${q.product} : ${q.divisor}`)+` = ${q.answer}`; $('review').appendChild(div);
+    });
+    if(previousWrong.length>12){const p=document.createElement('p');p.className='muted small';p.textContent=`und ${previousWrong.length-12} weitere Aufgaben`; $('review').appendChild(p);}
+  } else {const p=document.createElement('p');p.textContent='Keine Fehler – klasse!';$('review').appendChild(p);}
+  $('wrong').classList.toggle('hidden',previousWrong.length===0);
+}
+$('ops').addEventListener('click',e=>{const b=e.target.closest('button[data-value]');if(!b)return;op=b.dataset.value;selectGroup('ops',op);});
+$('modes').addEventListener('click',e=>{const b=e.target.closest('button[data-value]');if(!b)return;mode=b.dataset.value;selectGroup('modes',mode);$('row-box').classList.toggle('hidden',mode!=='row');});
+$('counts').addEventListener('click',e=>{const b=e.target.closest('button[data-value]');if(!b)return;count=Number(b.dataset.value);selectGroup('counts',count);});
+$('pad').addEventListener('click',e=>{const b=e.target.closest('button[data-k]');if(!b)return;padPress(b.dataset.k);});
+$('pad').addEventListener('mousedown',e=>e.preventDefault());
+$('start').addEventListener('click',start);
+$('answer-form').addEventListener('submit',submit);
+$('next').addEventListener('click',next);
+$('retry').addEventListener('click',start);
+$('wrong').addEventListener('click',()=>{
+  if(!previousWrong.length)return;
+  mode='errors';selectGroup('modes',mode);$('row-box').classList.add('hidden');
+  // Error review uses the saved tasks directly, regardless of current number-range settings.
+  try {
+    questions=shuffle(previousWrong.map(x=>Object.assign({},x.q))); lastConfig={mode:'errors',count:questions.length};
+    index=0;score=0;correct=0;streak=0;answered=false;wrong=[];
+    $('config-error').textContent='';$('results').classList.add('hidden');$('answer-form').classList.remove('hidden');$('feedback').textContent='';
+    render();$('answer').focus({preventScroll:true});
+  } catch(e) {$('config-error').textContent=e.message;}
+});
+updateArea();
+// Default: both operation types, both multiplication ranges, mixed practice, 10 questions.
+start();
+})();
+</script>
+</body>
+</html>
